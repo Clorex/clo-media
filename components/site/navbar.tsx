@@ -10,11 +10,11 @@ type User = { full_name: string; email: string; role: string } | null;
 
 const nav = [
   { href: "/", label: "Home" },
+  { href: "/deals", label: "Deals" },
   { href: "/services", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/contact", label: "Contact" },
-  { href: "/dashboard", label: "Dashboard" },
 ];
 
 export function Navbar({ user }: { user: User }) {
@@ -106,7 +106,7 @@ export function Navbar({ user }: { user: User }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink"
+                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink text-center"
                 >
                   {item.label}
                 </Link>
@@ -116,7 +116,7 @@ export function Navbar({ user }: { user: User }) {
                 <Link
                   href="/admin"
                   onClick={() => setOpen(false)}
-                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink"
+                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink text-center"
                 >
                   Admin
                 </Link>
@@ -126,27 +126,18 @@ export function Navbar({ user }: { user: User }) {
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink"
+                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink text-center"
                 >
                   Login
                 </Link>
               ) : (
                 <button
                   onClick={logout}
-                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-left text-sm font-extrabold text-ink"
+                  className="rounded-xl border border-brand-700/20 bg-white px-3 py-2 text-sm font-extrabold text-ink text-center"
                 >
                   Logout
                 </button>
               )}
-
-              <a
-                href={brand.whatsapp}
-                target="_blank"
-                onClick={() => setOpen(false)}
-                className="rounded-xl border border-brand-700/20 bg-gradient-to-r from-brand-200 via-brand-500/40 to-brand-200 px-3 py-2 text-sm font-extrabold text-ink"
-              >
-                WhatsApp
-              </a>
             </div>
           </Container>
         </div>

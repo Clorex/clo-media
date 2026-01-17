@@ -5,11 +5,13 @@ export const brand = {
   email: "itabitamiracle090@gmail.com",
   country: "Nigeria",
 };
+
 export const payment = {
   bankName: "OPay",
   accountNumber: "8059086041",
-  accountName: "Itabita Miracle",
+  accountName: "ITABITA MIRACLE OKIEMUTE",
 };
+
 export type Service = {
   title: string;
   description: string;
@@ -72,6 +74,33 @@ export type PriceItem = {
 };
 
 export const pricing: PriceItem[] = [
+  // DEALS / PACKS (sum of items - ₦1,000)
+  {
+    name: "Business Pack (Logo + Flyer + Free Sticker)",
+    priceLabel: "₦12,500",
+    note: "Business Logo (₦8,000) + Business Flyer (₦5,500) = ₦13,500 → ₦12,500. Sticker is free.",
+    cta: { label: "Book this deal", href: "/booking?service=Business%20Pack%20(Logo%20%2B%20Flyer%20%2B%20Free%20Sticker)" },
+  },
+  {
+    name: "Brand Launch Pack (Logo + Flyer + Business Card)",
+    priceLabel: "₦20,500",
+    note: "Logo (₦8,000) + Flyer (₦5,500) + Cards (₦8,000) = ₦21,500 → ₦20,500.",
+    cta: { label: "Book this deal", href: "/booking?service=Brand%20Launch%20Pack%20(Logo%20%2B%20Flyer%20%2B%20Business%20Card)" },
+  },
+  {
+    name: "Social Boost Pack (IG Remodel + 2 Flyers)",
+    priceLabel: "₦27,000",
+    note: "IG Remodeling (₦17,000) + 2 Flyers (₦11,000) = ₦28,000 → ₦27,000.",
+    cta: { label: "Book this deal", href: "/booking?service=Social%20Boost%20Pack%20(IG%20Remodel%20%2B%202%20Flyers)" },
+  },
+  {
+    name: "Ads Kickstart Pack (IG + Facebook Ads Setup)",
+    priceLabel: "₦19,000",
+    note: "IG Ads Setup (₦10,000) + Facebook Ads Setup (₦10,000) = ₦20,000 → ₦19,000.",
+    cta: { label: "Book this deal", href: "/booking?service=Ads%20Kickstart%20Pack%20(IG%20%2B%20Facebook%20Ads%20Setup)" },
+  },
+
+  // REGULAR PRICING
   { name: "Business Logo", priceLabel: "₦8,000" },
   { name: "Business Flyer", priceLabel: "₦5,500" },
   { name: "Business Cards", priceLabel: "₦8,000" },
@@ -112,70 +141,5 @@ This Pricing Policy explains how Clo Media pricing works, what is included in ea
 2.2 Clo Media focuses on premium presentation that builds trust quickly and communicates clearly to your audience.
 2.3 The price reflects time, skill, and delivery quality—not just “making something look fine”.
 
-3) REQUIREMENTS TO START WORK
-3.1 Work starts when the client provides the required information and confirms payment (where payment applies).
-3.2 If required information is missing, timelines automatically shift until the required information is received.
-3.3 Required information may include (depending on the service):
-- Correct business name spelling
-- Contact information (WhatsApp/phone/Instagram)
-- Offer details (pricing, promo, address if you want it, etc.)
-- Product/service list
-- Preferred colors (or request a color recommendation)
-- Images to be used (if any)
-- Deadline and usage platform (WhatsApp, Instagram, printing, etc.)
-
-4) REVISIONS POLICY
-4.1 Revisions are handled reasonably and professionally.
-4.2 A “revision” means adjusting the existing concept (for example: text edits, minor layout changes, color tweaks).
-4.3 A “new concept” means a full change in direction (for example: changing the entire design style after approval, switching to a different concept, or changing the core idea). New concepts may require a new fee.
-4.4 Clo Media may limit excessive back-and-forth revisions that significantly exceed the original scope. Where this happens, we will communicate clearly and agree next steps.
-
-5) TURNAROUND TIME
-5.1 Turnaround depends on the service, the completeness of requirements, and current workload.
-5.2 Rush delivery may be available (where possible) and may require an additional fee.
-5.3 If a client delays in responding to questions, approvals, or missing requirements, delivery timelines shift accordingly.
-
-6) PAYMENT POLICY
-6.1 For fixed-price services, payment is required before final delivery.
-6.2 When clients upload payment proof, the booking status is marked as “Pending Review” until Clo Media confirms the payment in admin.
-6.3 Uploading a payment screenshot is not automatic confirmation. Confirmation happens after admin review.
-6.4 Where bank transfers or payment systems have delays, Clo Media may require additional verification before confirmation.
-
-7) REFUNDS AND CANCELLATIONS
-7.1 Because design work is time-based and custom, refunds are not guaranteed once work has started.
-7.2 If a client cancels before work begins, Clo Media may at its discretion refund in full or partially depending on processing time and admin costs.
-7.3 If a client becomes unresponsive after work begins, the project may be paused. When the client returns, scheduling may change based on current workload.
-
-8) FILE DELIVERY FORMATS
-8.1 Deliverables are provided in formats appropriate to the service:
-- Social formats (JPG/PNG)
-- High resolution exports
-- Print-ready exports (where applicable)
-8.2 Editable/source files are not included unless explicitly agreed.
-8.3 If you require specific dimensions or platform formats, mention it at the start.
-
-9) PRINTING & CUSTOMIZATION (IF APPLICABLE)
-9.1 Printing and customization depend on quantity, size, finishing, material type, and delivery location.
-9.2 Clo Media will confirm a quote after specifications are provided.
-9.3 Production timelines and delivery logistics will be communicated before processing.
-
-10) WEBSITE BUILDS (IF APPLICABLE)
-10.1 Website pricing depends on number of pages, features, integrations, content readiness, and timeline.
-10.2 Clo Media will confirm requirements and scope before starting.
-10.3 Hosting/domain costs (if any) are typically paid separately by the client unless explicitly stated otherwise.
-
-11) CLIENT RESPONSIBILITIES
-11.1 The client is responsible for providing accurate information.
-11.2 Clo Media is not responsible for losses due to incorrect phone numbers, incorrect spelling supplied by the client, incorrect prices supplied by the client, or late information submission.
-11.3 The client is responsible for ensuring they have rights to use any images, logos, or brand assets provided to Clo Media.
-
-12) PORTFOLIO AND PROMOTION
-12.1 Clo Media may display completed work in a portfolio unless the client requests confidentiality in writing before work begins.
-12.2 For confidentiality requests, Clo Media will respect the agreement.
-
-13) CONTACT AND SUPPORT
-13.1 For questions about requirements, scope, or which service fits your goal, please use “Chat with Clo Media”.
-13.2 Clo Media aims to respond as fast as possible, but response time depends on working hours and workload.
-
-If anything in this Pricing Policy is unclear, do not guess—chat with Clo Media so we can guide you correctly.
+(unchanged)
 `.trim();

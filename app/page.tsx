@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/site/container";
 import { Button } from "@/components/ui/button";
-import { brand, pricing, services } from "@/lib/content";
+import { brand, pricing, services, payment } from "@/lib/content";
 import { TestimonialChatsIOS } from "@/components/site/testimonial-chats-ios";
 import { getPublicChatTestimonials } from "@/lib/testimonial-chats.store";
 
@@ -35,7 +35,7 @@ function Card({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white shadow-[0_24px_60px_rgba(242,92,5,0.10)]">
+    <div className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white shadow-[0_24px_60px_rgba(242,92,5,0.10)] transition hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(242,92,5,0.14)]">
       <Band variant={band} />
       <div className="p-6">
         <h3 className="text-lg md:text-xl font-extrabold">{title}</h3>
@@ -53,19 +53,26 @@ function Section({
   children,
 }: {
   kicker: string;
-  title: string;
+  title?: string;
   subtitle?: string;
   children: React.ReactNode;
 }) {
+  const showTitle = typeof title === "string" && title.trim().length > 0;
+
   return (
     <section className="py-14 md:py-20">
       <Container>
         <p className="text-xs font-extrabold tracking-[0.28em] text-brand-700">{kicker}</p>
-        <h2 className="mt-3 text-3xl md:text-4xl font-extrabold">{title}</h2>
+
+        {showTitle ? (
+          <h2 className="mt-3 text-3xl md:text-4xl font-extrabold">{title}</h2>
+        ) : null}
+
         {subtitle ? (
           <p className="mt-3 max-w-2xl text-sm md:text-base text-ink/70">{subtitle}</p>
         ) : null}
-        <div className="mt-10">{children}</div>
+
+        <div className={showTitle || subtitle ? "mt-10" : "mt-6"}>{children}</div>
       </Container>
     </section>
   );
@@ -89,6 +96,13 @@ export default async function HomePage() {
 
   const featuredServices = services.slice(0, 8);
   const chats = await getPublicChatTestimonials(110);
+
+  const quick = [
+    { name: "Business Logo", price: "₦8,000", band: "a" as const },
+    { name: "Business Flyer", price: "₦5,500", band: "b" as const },
+    { name: "Business Cards", price: "₦8,000", band: "c" as const },
+    { name: "Instagram Remodeling", price: "₦17,000", band: "a" as const },
+  ];
 
   return (
     <div>
@@ -117,11 +131,11 @@ export default async function HomePage() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href="/booking">Book a Service</Button>
-              <Button href="/pricing" variant="outline">
-                View Pricing
+              <Button href="/deals" variant="outline">
+                Deals
               </Button>
-              <Button href={brand.whatsapp} target="_blank" variant="ghost">
-                WhatsApp
+              <Button href="/pricing" variant="outline">
+                Pricing
               </Button>
             </div>
 
@@ -137,8 +151,8 @@ export default async function HomePage() {
           </div>
 
           <div className="relative">
-            <div className="absolute -top-10 -left-12 h-44 w-44 rounded-full bg-brand-500/20 blur-2xl" />
-            <div className="absolute -bottom-12 -right-12 h-56 w-56 rounded-full bg-brand-700/18 blur-2xl" />
+            <div className="clo-float-a absolute -top-10 -left-12 h-44 w-44 rounded-full bg-brand-500/20 blur-2xl" />
+            <div className="clo-float-b absolute -bottom-12 -right-12 h-56 w-56 rounded-full bg-brand-700/18 blur-2xl" />
 
             <div className="rounded-[2rem] border border-brand-700/15 bg-white p-6 shadow-[0_40px_110px_rgba(242,92,5,0.14)]">
               <div className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white">
@@ -153,40 +167,52 @@ export default async function HomePage() {
                   </h3>
 
                   <p className="mt-2 text-sm text-ink/70">
-                    Submit your service details, upload payment proof, and your request goes into review.
+                    Pick a service below. Payment details are shown here and also on booking.
                   </p>
 
                   <div className="mt-5 grid gap-3">
-                    {[
-                      { name: "Business Logo", price: "₦8,000", band: "a" as const },
-                      { name: "Business Flyer", price: "₦5,500", band: "b" as const },
-                      { name: "Business Cards", price: "₦8,000", band: "c" as const },
-                      { name: "Instagram Remodeling", price: "₦17,000", band: "a" as const },
-                    ].map((x) => (
-                      <div
+                    {quick.map((x) => (
+                      <Link
                         key={x.name}
-                        className="overflow-hidden rounded-2xl border border-brand-700/15 bg-white"
+                        href={`/booking?service=${encodeURIComponent(x.name)}`}
+                        className="group overflow-hidden rounded-2xl border border-brand-700/15 bg-white transition hover:-translate-y-[1px] hover:shadow-[0_18px_50px_rgba(242,92,5,0.10)] active:translate-y-0"
                       >
                         <Band variant={x.band} />
                         <div className="p-4">
                           <div className="flex items-start justify-between gap-4">
                             <div>
                               <p className="text-sm font-extrabold text-brand-700">{x.name}</p>
-                              <p className="mt-1 text-xs text-ink/70">
-                                Premium export quality and clean layout.
-                              </p>
+                              <p className="mt-1 text-xs text-ink/70">Tap to book.</p>
                             </div>
                             <p className="text-sm font-extrabold text-brand-700">{x.price}</p>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
+                  </div>
+
+                  <div className="mt-6 overflow-hidden rounded-2xl border border-brand-700/15 bg-white">
+                    <Band variant="b" />
+                    <div className="p-4">
+                      <p className="text-xs font-extrabold tracking-[0.22em] text-brand-700">
+                        PAYMENT DETAILS
+                      </p>
+                      <p className="mt-2 text-sm text-ink">
+                        <span className="font-extrabold">Account name:</span> {payment.accountName}
+                      </p>
+                      <p className="text-sm text-ink">
+                        <span className="font-extrabold">Bank:</span> {payment.bankName}
+                      </p>
+                      <p className="text-sm text-ink">
+                        <span className="font-extrabold">Account number:</span> {payment.accountNumber}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                     <Button href="/booking">Start booking</Button>
-                    <Button href="/contact" variant="outline">
-                      Contact
+                    <Button href="/deals" variant="outline">
+                      View deals
                     </Button>
                   </div>
 
@@ -202,8 +228,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Testimonials (no extra title/subtitle text) */}
-      <Section kicker="TESTIMONIALS" title="" subtitle={undefined}>
+      <Section kicker="TESTIMONIALS">
         <TestimonialChatsIOS items={chats as any} />
       </Section>
 
@@ -251,7 +276,7 @@ export default async function HomePage() {
           {featuredPricing.map((item, idx) => (
             <div
               key={item.name}
-              className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white shadow-[0_24px_60px_rgba(242,92,5,0.08)]"
+              className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white shadow-[0_24px_60px_rgba(242,92,5,0.08)] transition hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(242,92,5,0.12)]"
             >
               <Band variant={idx % 2 === 0 ? "a" : "b"} />
               <div className="p-5">

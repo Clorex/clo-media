@@ -35,9 +35,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${display.variable} min-h-dvh bg-paper text-ink font-sans`}>
+      <body
+        className={`${poppins.variable} ${display.variable} min-h-dvh bg-paper text-ink font-sans`}
+      >
         <Navbar user={user} />
-        <main className="motion-safe:animate-[fadeUp_450ms_ease-out]">{children}</main>
+        <main className="motion-safe:animate-[fadeUp_520ms_ease-out]">{children}</main>
         <Footer />
         <AssistantWidget />
       </body>

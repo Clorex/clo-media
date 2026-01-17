@@ -1,10 +1,18 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import { payment, brand, pricing } from "@/lib/content";
 import { Button } from "@/components/ui/button";
 
 const SERVICES = [
+  // Deals / Packs
+  "Business Pack (Logo + Flyer + Free Sticker)",
+  "Brand Launch Pack (Logo + Flyer + Business Card)",
+  "Social Boost Pack (IG Remodel + 2 Flyers)",
+  "Ads Kickstart Pack (IG + Facebook Ads Setup)",
+
+  // Regular
   "Business Logo",
   "Business Flyer",
   "Business Cards",
@@ -34,10 +42,19 @@ function Band({ variant = "a" }: { variant?: "a" | "b" | "c" }) {
 }
 
 export function BookingForm() {
-  const [service, setService] = React.useState<(typeof SERVICES)[number]>("Business Logo");
+  const sp = useSearchParams();
+
+  const [service, setService] = React.useState<(typeof SERVICES)[number]>(SERVICES[0]);
   const [businessName, setBusinessName] = React.useState("");
   const [contactInfo, setContactInfo] = React.useState("");
   const [details, setDetails] = React.useState("");
+
+  React.useEffect(() => {
+    const qs = sp.get("service");
+    if (!qs) return;
+    const match = SERVICES.find((s) => s === qs);
+    if (match) setService(match);
+  }, [sp]);
 
   const priceLabel = getPriceLabel(service);
 
@@ -50,11 +67,9 @@ export function BookingForm() {
   return (
     <div className="overflow-hidden rounded-[2rem] border border-brand-700/15 bg-white shadow-[0_40px_110px_rgba(242,92,5,0.14)]">
       <Band variant="a" />
+
       <div className="p-6 md:p-8">
         <h2 className="text-2xl md:text-3xl font-extrabold">Booking</h2>
-        <p className="mt-2 text-sm text-ink/70">
-          Booking is being migrated to Vercel Postgres. For now, submit via WhatsApp.
-        </p>
 
         <div className="mt-6 grid gap-4">
           <div>
@@ -121,7 +136,7 @@ export function BookingForm() {
             </div>
           </div>
 
-          <Button href={waLink} target="_blank">
+          <Button href={waLink} target="_blank" className="w-full justify-center text-center">
             Send on WhatsApp
           </Button>
         </div>
