@@ -49,6 +49,7 @@ export function BookingForm() {
   const [contactInfo, setContactInfo] = React.useState("");
   const [details, setDetails] = React.useState("");
 
+  // Prefill service from ?service=...
   React.useEffect(() => {
     const qs = sp.get("service");
     if (!qs) return;
@@ -59,7 +60,7 @@ export function BookingForm() {
   const priceLabel = getPriceLabel(service);
 
   const whatsappText = encodeURIComponent(
-    `Hello Clo Media,%0A%0AService: ${service} (${priceLabel})%0ABusiness name: ${businessName}%0AContact info: ${contactInfo}%0ADetails: ${details}%0A%0APayment: ${payment.bankName} ${payment.accountNumber} (${payment.accountName})`
+    `Hello Clo Media,%0A%0AService: ${service} (${priceLabel})%0ABusiness name: ${businessName}%0AContact info: ${contactInfo}%0ADetails: ${details}%0A%0APayment details: ${payment.bankName} ${payment.accountNumber} (${payment.accountName})%0A%0AProof of payment: I will send my receipt/screenshot here.`
   );
 
   const waLink = `${brand.whatsapp}?text=${whatsappText}`;
@@ -67,7 +68,6 @@ export function BookingForm() {
   return (
     <div className="overflow-hidden rounded-[2rem] border border-brand-700/15 bg-white shadow-[0_40px_110px_rgba(242,92,5,0.14)]">
       <Band variant="a" />
-
       <div className="p-6 md:p-8">
         <h2 className="text-2xl md:text-3xl font-extrabold">Booking</h2>
 
@@ -132,6 +132,11 @@ export function BookingForm() {
               </p>
               <p className="text-sm text-ink">
                 <span className="font-extrabold">Account name:</span> {payment.accountName}
+              </p>
+
+              <p className="mt-3 text-xs text-ink/70">
+                After payment, send your <span className="font-extrabold">receipt/screenshot</span> on WhatsApp as
+                proof.
               </p>
             </div>
           </div>

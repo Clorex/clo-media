@@ -20,6 +20,11 @@ export default function BookingPage() {
           <p className="text-sm text-ink/80">
             <span className="font-extrabold">Account number:</span> {payment.accountNumber}
           </p>
+
+          <p className="mt-4 text-sm text-ink/80">
+            After payment, take a <span className="font-extrabold">screenshot/photo of your receipt</span>{" "}
+            and send it on WhatsApp as proof of payment.
+          </p>
         </div>
       </div>
 
