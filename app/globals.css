@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(1200px circle at 10% 0%, rgba(242, 92, 5, 0.16), transparent 55%),
+    radial-gradient(900px circle at 92% 8%, rgba(211, 58, 3, 0.12), transparent 62%),
+    radial-gradient(800px circle at 20% 92%, rgba(242, 92, 5, 0.10), transparent 60%),
+    linear-gradient(180deg, rgba(255, 244, 236, 0.95), rgba(255, 255, 255, 1));
+  color: #0B0B0B;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(242, 92, 5, 0.18);
+  color: #0B0B0B;
+}
+
+/* Big texts (headings) in orange */
+h1, h2, h3, h4 {
+  color: #D33A03;
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Normal text stays readable */
+p, li, a, label, input, textarea, button, select {
+  font-family: var(--font-sans);
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
