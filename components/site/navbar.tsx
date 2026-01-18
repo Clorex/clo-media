@@ -17,9 +17,8 @@ const nav = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Navbar({ user }: { user: User }) {
+export function Navbar({ user, isAdminUser }: { user: User; isAdminUser: boolean }) {
   const [open, setOpen] = React.useState(false);
-
   const firstName = user?.full_name?.trim().split(" ")[0] || null;
 
   async function logout() {
@@ -33,7 +32,7 @@ export function Navbar({ user }: { user: User }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white/85 backdrop-blur border-b border-brand-700/15">
-      <div className="h-1 w-full bg-gradient-to-r from-brand-700 via-brand-500 to-brand-700" />
+      <div className="h-1 w-full bg-gradient-to-r from-brand-700 via-brand-500 to-brand-700 clo-band" />
 
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" className="text-sm font-extrabold tracking-wide text-ink">
@@ -42,16 +41,11 @@ export function Navbar({ user }: { user: User }) {
 
         <nav className="hidden items-center gap-6 md:flex">
           {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-extrabold text-ink/80 hover:text-ink"
-            >
+            <Link key={item.href} href={item.href} className="text-sm font-extrabold text-ink/80 hover:text-ink">
               {item.label}
             </Link>
           ))}
-
-          {user?.role === "admin" ? (
+          {isAdminUser ? (
             <Link href="/admin" className="text-sm font-extrabold text-ink/80 hover:text-ink">
               Admin
             </Link>
@@ -59,32 +53,18 @@ export function Navbar({ user }: { user: User }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          {firstName ? (
-            <span className="hidden sm:inline text-sm font-extrabold text-brand-700">
-              Hi {firstName}
-            </span>
-          ) : null}
+          {firstName ? <span className="hidden sm:inline text-sm font-extrabold text-brand-700">Hi {firstName}</span> : null}
 
-          <a
-            href={brand.instagram}
-            target="_blank"
-            className="hidden text-sm font-extrabold text-ink/75 hover:text-ink sm:block"
-          >
+          <a href={brand.instagram} target="_blank" className="hidden text-sm font-extrabold text-ink/75 hover:text-ink sm:block">
             IG: clomedi.a
           </a>
 
-          <Button href="/booking" className="hidden sm:inline-flex">
-            Book
-          </Button>
+          <Button href="/booking" className="hidden sm:inline-flex">Book</Button>
 
           {!user ? (
-            <Button href="/login" variant="outline">
-              Login
-            </Button>
+            <Button href="/login" variant="outline">Login</Button>
           ) : (
-            <Button variant="outline" onClick={logout}>
-              Logout
-            </Button>
+            <Button variant="outline" onClick={logout}>Logout</Button>
           )}
 
           <button
@@ -112,7 +92,7 @@ export function Navbar({ user }: { user: User }) {
                 </Link>
               ))}
 
-              {user?.role === "admin" ? (
+              {isAdminUser ? (
                 <Link
                   href="/admin"
                   onClick={() => setOpen(false)}

@@ -1,304 +1,191 @@
-import Link from "next/link";
+"use client";
+
+import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import { Container } from "@/components/site/container";
 import { Button } from "@/components/ui/button";
-import { brand, pricing, services, payment } from "@/lib/content";
-import { TestimonialChatsIOS } from "@/components/site/testimonial-chats-ios";
-import { getPublicChatTestimonials } from "@/lib/testimonial-chats.store";
 
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-full border border-brand-700/20 bg-white px-3 py-1 text-xs font-extrabold text-ink shadow-[0_10px_22px_rgba(211,58,3,0.06)]">
-      {children}
-    </span>
+type Mode = "login" | "signup";
+
+function EyeIcon({ off }: { off?: boolean }) {
+  return off ? (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-ink/70">
+      <path d="M3 3l18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M10.6 10.6a3 3 0 0 0 4.2 4.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M6.7 6.7C4.3 8.4 2.7 10.7 2 12c1.4 2.6 5.3 7 10 7 1.5 0 2.9-.4 4.2-1"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.9 4.3C10.6 4.1 11.3 4 12 4c4.7 0 8.6 4.4 10 8-0.5 1-1.6 2.6-3.2 4.1"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  ) : (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-ink/70">
+      <path
+        d="M2 12c1.4-3.6 5.3-8 10-8s8.6 4.4 10 8c-1.4 3.6-5.3 8-10 8S3.4 15.6 2 12z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" stroke="currentColor" strokeWidth="2" />
+    </svg>
   );
 }
 
-function Band({ variant = "a" }: { variant?: "a" | "b" | "c" }) {
-  const cls =
-    variant === "a"
-      ? "from-brand-700 via-brand-500 to-brand-700"
-      : variant === "b"
-      ? "from-brand-500 via-brand-700 to-brand-500"
-      : "from-brand-700 via-brand-700 to-brand-500";
-  return <div className={`h-1 w-full bg-gradient-to-r ${cls}`} />;
-}
+export default function LoginPage() {
+  const params = useSearchParams();
+  const redirectTo = params.get("redirect") || "/";
 
-function Card({
-  title,
-  text,
-  band = "a",
-  children,
-}: {
-  title: string;
-  text?: string;
-  band?: "a" | "b" | "c";
-  children?: React.ReactNode;
-}) {
-  return (
-    <div className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white shadow-[0_24px_60px_rgba(242,92,5,0.10)] transition hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(242,92,5,0.14)]">
-      <Band variant={band} />
-      <div className="p-6">
-        <h3 className="text-lg md:text-xl font-extrabold">{title}</h3>
-        {text ? <p className="mt-2 text-sm text-ink/70">{text}</p> : null}
-        {children ? <div className="mt-5">{children}</div> : null}
-      </div>
-    </div>
-  );
-}
+  const [mode, setMode] = React.useState<Mode>("login");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-function Section({
-  kicker,
-  title,
-  subtitle,
-  children,
-}: {
-  kicker: string;
-  title?: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  const showTitle = typeof title === "string" && title.trim().length > 0;
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
 
-  return (
-    <section className="py-14 md:py-20">
-      <Container>
-        <p className="text-xs font-extrabold tracking-[0.28em] text-brand-700">{kicker}</p>
+  const [fullName, setFullName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
 
-        {showTitle ? (
-          <h2 className="mt-3 text-3xl md:text-4xl font-extrabold">{title}</h2>
-        ) : null}
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-        {subtitle ? (
-          <p className="mt-3 max-w-2xl text-sm md:text-base text-ink/70">{subtitle}</p>
-        ) : null}
+    try {
+      const payload =
+        mode === "login"
+          ? { email, password }
+          : { email, password, full_name: fullName, phone };
 
-        <div className={showTitle || subtitle ? "mt-10" : "mt-6"}>{children}</div>
-      </Container>
-    </section>
-  );
-}
+      const res = await fetch(mode === "login" ? "/api/auth/login" : "/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify(payload),
+      });
 
-export default async function HomePage() {
-  const featuredPricing = pricing.filter((p) =>
-    [
-      "Business Logo",
-      "Business Flyer",
-      "Business Cards",
-      "Instagram Remodeling",
-      "Instagram Ads Setup",
-      "Facebook Ads Setup",
-      "TikTok Ads Setup",
-      "Video Adverts",
-      "Business Name Registration",
-      "Limited Liability",
-    ].includes(p.name)
-  );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed");
 
-  const featuredServices = services.slice(0, 8);
-  const chats = await getPublicChatTestimonials(110);
-
-  const quick = [
-    { name: "Business Logo", price: "₦8,000", band: "a" as const },
-    { name: "Business Flyer", price: "₦5,500", band: "b" as const },
-    { name: "Business Cards", price: "₦8,000", band: "c" as const },
-    { name: "Instagram Remodeling", price: "₦17,000", band: "a" as const },
-  ];
+      // IMPORTANT: hard refresh so Navbar/layout reads the new cookie
+      window.location.href = `/welcome?next=${encodeURIComponent(redirectTo)}`;
+    } catch (err: any) {
+      setError(err?.message || "Failed");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div>
-      <section className="pt-10 pb-12 md:pt-16 md:pb-16">
-        <Container className="grid gap-10 md:grid-cols-2 md:items-center">
-          <div>
-            <p className="text-xs font-extrabold tracking-[0.28em] text-brand-700">CLO MEDIA</p>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center">
+      <Container className="w-full py-10 flex justify-center">
+        <div className="w-full max-w-md">
+          <h1 className="text-center text-3xl md:text-4xl font-extrabold">Login</h1>
 
-            <h1 className="mt-4 text-4xl md:text-6xl font-extrabold leading-[1.02]">
-              Premium branding and design that looks expensive.
-            </h1>
+          <div className="mt-6 overflow-hidden rounded-[2rem] border border-brand-700/15 bg-white shadow-[0_40px_110px_rgba(242,92,5,0.14)]">
+            <div className="h-1 w-full bg-gradient-to-r from-brand-700 via-brand-500 to-brand-700 clo-band" />
 
-            <p className="mt-5 text-sm md:text-base text-ink/75 max-w-xl">
-              Logos, flyers, business cards, Instagram remodeling, ads setup, video adverts, and business
-              registration support — created with strong hierarchy and premium presentation.
-            </p>
+            <div className="p-6 md:p-8">
+              <div className="mx-auto grid grid-cols-2 gap-2 max-w-sm">
+                <button
+                  className={
+                    "rounded-xl border px-3 py-2 text-sm font-extrabold text-center transition " +
+                    (mode === "login"
+                      ? "border-brand-700/25 bg-brand-50 text-ink"
+                      : "border-brand-700/15 bg-white text-ink/70 hover:text-ink")
+                  }
+                  onClick={() => setMode("login")}
+                  type="button"
+                >
+                  Login
+                </button>
 
-            <div className="mt-7 flex flex-wrap gap-2">
-              <Chip>Clean hierarchy</Chip>
-              <Chip>Premium layout</Chip>
-              <Chip>Strong contrast</Chip>
-              <Chip>WhatsApp-ready</Chip>
-              <Chip>Instagram-first</Chip>
-              <Chip>Fast delivery flow</Chip>
-            </div>
+                <button
+                  className={
+                    "rounded-xl border px-3 py-2 text-sm font-extrabold text-center transition " +
+                    (mode === "signup"
+                      ? "border-brand-700/25 bg-brand-50 text-ink"
+                      : "border-brand-700/15 bg-white text-ink/70 hover:text-ink")
+                  }
+                  onClick={() => setMode("signup")}
+                  type="button"
+                >
+                  Sign up
+                </button>
+              </div>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button href="/booking">Book a Service</Button>
-              <Button href="/deals" variant="outline">
-                Deals
-              </Button>
-              <Button href="/pricing" variant="outline">
-                Pricing
-              </Button>
-            </div>
-
-            <p className="mt-7 text-xs text-ink/65">
-              <a href={brand.instagram} target="_blank" className="underline underline-offset-4">
-                Instagram
-              </a>{" "}
-              •{" "}
-              <Link href="/portfolio" className="underline underline-offset-4">
-                Portfolio
-              </Link>
-            </p>
-          </div>
-
-          <div className="relative">
-            <div className="clo-float-a absolute -top-10 -left-12 h-44 w-44 rounded-full bg-brand-500/20 blur-2xl" />
-            <div className="clo-float-b absolute -bottom-12 -right-12 h-56 w-56 rounded-full bg-brand-700/18 blur-2xl" />
-
-            <div className="rounded-[2rem] border border-brand-700/15 bg-white p-6 shadow-[0_40px_110px_rgba(242,92,5,0.14)]">
-              <div className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white">
-                <Band variant="a" />
-                <div className="p-6">
-                  <p className="text-xs font-extrabold tracking-[0.28em] text-brand-700">
-                    QUICK BOOKING
-                  </p>
-
-                  <h3 className="mt-2 text-2xl md:text-3xl font-extrabold">
-                    Book → Pay → Upload proof
-                  </h3>
-
-                  <p className="mt-2 text-sm text-ink/70">
-                    Pick a service below. Payment details are shown here and also on booking.
-                  </p>
-
-                  <div className="mt-5 grid gap-3">
-                    {quick.map((x) => (
-                      <Link
-                        key={x.name}
-                        href={`/booking?service=${encodeURIComponent(x.name)}`}
-                        className="group overflow-hidden rounded-2xl border border-brand-700/15 bg-white transition hover:-translate-y-[1px] hover:shadow-[0_18px_50px_rgba(242,92,5,0.10)] active:translate-y-0"
-                      >
-                        <Band variant={x.band} />
-                        <div className="p-4">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-sm font-extrabold text-brand-700">{x.name}</p>
-                              <p className="mt-1 text-xs text-ink/70">Tap to book.</p>
-                            </div>
-                            <p className="text-sm font-extrabold text-brand-700">{x.price}</p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-
-                  <div className="mt-6 overflow-hidden rounded-2xl border border-brand-700/15 bg-white">
-                    <Band variant="b" />
-                    <div className="p-4">
-                      <p className="text-xs font-extrabold tracking-[0.22em] text-brand-700">
-                        PAYMENT DETAILS
-                      </p>
-                      <p className="mt-2 text-sm text-ink">
-                        <span className="font-extrabold">Account name:</span> {payment.accountName}
-                      </p>
-                      <p className="text-sm text-ink">
-                        <span className="font-extrabold">Bank:</span> {payment.bankName}
-                      </p>
-                      <p className="text-sm text-ink">
-                        <span className="font-extrabold">Account number:</span> {payment.accountNumber}
-                      </p>
+              <form onSubmit={submit} className="mt-6 grid gap-4">
+                {mode === "signup" ? (
+                  <>
+                    <div>
+                      <label className="text-sm font-extrabold text-ink/80">Full name</label>
+                      <input
+                        className="mt-1 w-full rounded-xl border border-brand-700/15 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-brand-700"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                      />
                     </div>
-                  </div>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <Button href="/booking">Start booking</Button>
-                    <Button href="/deals" variant="outline">
-                      View deals
-                    </Button>
-                  </div>
+                    <div>
+                      <label className="text-sm font-extrabold text-ink/80">Phone / WhatsApp</label>
+                      <input
+                        className="mt-1 w-full rounded-xl border border-brand-700/15 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-brand-700"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </>
+                ) : null}
 
-                  <p className="mt-5 text-xs text-ink/65">
-                    <Link href="/pricing" className="underline underline-offset-4">
-                      View full pricing
-                    </Link>
-                  </p>
+                <div>
+                  <label className="text-sm font-extrabold text-ink/80">Email</label>
+                  <input
+                    type="email"
+                    className="mt-1 w-full rounded-xl border border-brand-700/15 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-brand-700"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
-              </div>
+
+                <div>
+                  <label className="text-sm font-extrabold text-ink/80">Password</label>
+                  <div className="relative mt-1">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="w-full rounded-xl border border-brand-700/15 bg-white px-3 py-2 pr-11 text-sm text-ink outline-none focus:border-brand-700"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg border border-brand-700/15 bg-white px-2 py-1"
+                    >
+                      <EyeIcon off={!showPassword} />
+                    </button>
+                  </div>
+                </div>
+
+                {error ? <p className="text-sm text-red-700 text-center">{error}</p> : null}
+
+                <Button disabled={loading} type="submit" className="w-full justify-center text-center">
+                  {loading ? "Please wait..." : mode === "login" ? "Login" : "Create account"}
+                </Button>
+              </form>
             </div>
           </div>
-        </Container>
-      </section>
-
-      <Section kicker="TESTIMONIALS">
-        <TestimonialChatsIOS items={chats as any} />
-      </Section>
-
-      <Section
-        kicker="SERVICES"
-        title="Services built for premium presentation."
-        subtitle="Pick what you need. For custom requests, chat with Clo Media."
-      >
-        <div className="grid gap-6 md:grid-cols-2">
-          {featuredServices.map((s, i) => (
-            <Card
-              key={s.title}
-              band={i % 3 === 0 ? "a" : i % 3 === 1 ? "b" : "c"}
-              title={s.title}
-              text={s.description}
-            >
-              <ul className="space-y-2">
-                {s.bullets.map((b) => (
-                  <li key={b} className="flex gap-2 text-sm text-ink/75">
-                    <span className="mt-[7px] h-2 w-2 rounded-full bg-brand-500" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                <Button href="/booking" variant="outline">
-                  Book
-                </Button>
-                <Button href="/pricing" variant="ghost">
-                  Pricing
-                </Button>
-              </div>
-            </Card>
-          ))}
         </div>
-      </Section>
-
-      <Section
-        kicker="PRICING"
-        title="Clear pricing."
-        subtitle="Fixed prices for listed services. For spec-based requests, chat with Clo Media."
-      >
-        <div className="grid gap-4 md:grid-cols-2">
-          {featuredPricing.map((item, idx) => (
-            <div
-              key={item.name}
-              className="overflow-hidden rounded-3xl border border-brand-700/15 bg-white shadow-[0_24px_60px_rgba(242,92,5,0.08)] transition hover:-translate-y-[2px] hover:shadow-[0_30px_80px_rgba(242,92,5,0.12)]"
-            >
-              <Band variant={idx % 2 === 0 ? "a" : "b"} />
-              <div className="p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-extrabold text-brand-700">{item.name}</p>
-                    {item.note ? <p className="mt-1 text-xs text-ink/70">{item.note}</p> : null}
-                  </div>
-                  <p className="text-sm font-extrabold text-brand-700">{item.priceLabel}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button href="/pricing">Full pricing</Button>
-          <Button href="/booking" variant="outline">
-            Book now
-          </Button>
-        </div>
-      </Section>
+      </Container>
     </div>
   );
 }

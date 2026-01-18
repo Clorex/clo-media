@@ -39,27 +39,32 @@ export async function getPublicChatTestimonials(limit = 100) {
     const rows = toRows(res);
     if (rows.length) return rows as DbChatTestimonial[];
   } catch {
-    // DB table may not exist yet
+    // fallback if table doesn't exist yet
   }
 
   return seedChatTestimonials.slice(0, limit);
 }
 
 export async function getAdminChatTestimonials(limit = 400) {
-  const res = await sql.query(
-    `select
-      id,
-      customer_name as "customerName",
-      service,
-      customer_message as "customerText",
-      our_reply as "ourReply",
-      active,
-      created_at
-    from testimonial_chats
-    order by created_at desc
-    limit $1`,
-    [limit]
-  );
+  try {
+    const res = await sql.query(
+      `select
+        id,
+        customer_name as "customerName",
+        service,
+        customer_message as "customerText",
+        our_reply as "ourReply",
+        active,
+        created_at
+      from testimonial_chats
+      order by created_at desc
+      limit $1`,
+      [limit]
+    );
 
-  return toRows(res) as DbChatTestimonial[];
+    return toRows(res) as DbChatTestimonial[];
+  } catch {
+    // IMPORTANT: don't crash admin page if table is missing
+    return [];
+  }
 }

@@ -76,16 +76,21 @@ export function AssistantWidget() {
 
   const popupClass =
     "w-[min(92vw,380px)] overflow-hidden rounded-[1.75rem] border border-brand-700/15 bg-white " +
-    "shadow-[0_40px_110px_rgba(242,92,5,0.18)] transform transition-all duration-200 " +
-    "animate-[cloPop_180ms_ease-out]";
+    "shadow-[0_40px_110px_rgba(242,92,5,0.18)] animate-[cloPop_180ms_ease-out]";
 
-  const buttonClass =
-    "relative rounded-full border border-brand-700/25 bg-slate-950 px-5 py-3 text-sm font-extrabold text-white " +
-    "shadow-[0_24px_70px_rgba(2,6,23,0.35)] transition hover:shadow-[0_28px_90px_rgba(2,6,23,0.45)] " +
-    "active:translate-y-[1px] focus:outline-none focus:ring-4 focus:ring-brand-500/25";
+  const floatingWrapClass =
+    "fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-[calc(1rem+env(safe-area-inset-right))] " +
+    "z-[9999] pointer-events-none";
+
+  // Small circular AI button (still tappable on phone)
+  const miniButtonClass =
+    "relative h-12 w-12 rounded-full border border-brand-700/25 bg-slate-950 " +
+    "text-white text-sm font-extrabold shadow-[0_24px_70px_rgba(2,6,23,0.35)] " +
+    "transition hover:shadow-[0_28px_90px_rgba(2,6,23,0.45)] active:translate-y-[1px] " +
+    "focus:outline-none focus:ring-4 focus:ring-brand-500/25";
 
   const ui = (
-    <div className="fixed bottom-4 right-4 z-[9999] pointer-events-none">
+    <div className={floatingWrapClass}>
       <div className="pointer-events-auto">
         {open ? (
           <div className={popupClass}>
@@ -178,11 +183,14 @@ export function AssistantWidget() {
             `}</style>
           </div>
         ) : (
-          <button onClick={() => setOpen(true)} className={buttonClass}>
-            <span className="inline-flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-              Chat with AI
-            </span>
+          <button
+            onClick={() => setOpen(true)}
+            className={miniButtonClass}
+            aria-label="Open AI chat"
+            title="AI"
+          >
+            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-brand-500 clo-pulse-dot" />
+            AI
           </button>
         )}
       </div>
